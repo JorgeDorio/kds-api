@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "asZsSSAeAmtwsir0aHvpAdWkiU/KRfFTr7mS5VHSM4Y=",
+  "Source": "kds-api",
+  "BasePath": "_content/kds-api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

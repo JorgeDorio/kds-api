@@ -1,0 +1,74 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/dorio/dev/kds/kds-api/kds-api.csproj": {}
+  },
+  "projects": {
+    "/home/dorio/dev/kds/kds-api/kds-api.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/dorio/dev/kds/kds-api/kds-api.csproj",
+        "projectName": "kds-api",
+        "projectPath": "/home/dorio/dev/kds/kds-api/kds-api.csproj",
+        "packagesPath": "/home/dorio/.nuget/packages/",
+        "outputPath": "/home/dorio/dev/kds/kds-api/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/dorio/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.28.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/8.0.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

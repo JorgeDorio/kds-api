@@ -10,4 +10,5 @@ public class Station
     public string? Id { get; set; }
     public required string Name { get; set; }
     public IEnumerable<PizzaOrder>? Orders { get; set; }
+    public PizzaOrder? NextOrder { get; set; }
 }

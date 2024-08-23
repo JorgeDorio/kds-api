@@ -29,4 +29,5 @@ public class PizzaOrder
     public List<string> Flavors { get; set; } = new List<string>();
     public string? FlowId { get; set; }
     public string? StationId { get; set; }
+    public IEnumerable<StartEndReport> StartEndReports { get; set; } = new List<StartEndReport>();
 }

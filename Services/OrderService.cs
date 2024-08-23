@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
 using Kds.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -10,6 +12,7 @@ public class OrderService
     private readonly IMongoCollection<PizzaOrder> _pizzaOrdersCollection;
     private readonly IMongoCollection<Order> _ordersCollection;
     private readonly IMongoCollection<Station> _stationsCollection;
+    private readonly IMongoCollection<Flow> _flowsCollection;
     private readonly FlowService _flowService;
 
     public OrderService(IOptions<MongoDatabaseSettings> dbSettings, FlowService flowService)
@@ -19,6 +22,7 @@ public class OrderService
         _pizzaOrdersCollection = mongoDatabase.GetCollection<PizzaOrder>(dbSettings.Value.PizzaOrdersCollectionName);
         _ordersCollection = mongoDatabase.GetCollection<Order>(dbSettings.Value.OrdersCollectionName);
         _stationsCollection = mongoDatabase.GetCollection<Station>(dbSettings.Value.StationsCollectionName);
+        _flowsCollection = mongoDatabase.GetCollection<Flow>(dbSettings.Value.FlowsCollectionName);
         _flowService = flowService;
     }
 
@@ -49,6 +53,46 @@ public class OrderService
         station.Orders = (await _pizzaOrdersCollection.FindAsync(x => x.StationId == stationId)).ToList();
 
         return station;
+    }
+
+    public async Task<Station> GetNextByStationId(string stationId)
+    {
+        var station = (await _stationsCollection.FindAsync(x => x.Id == stationId)).FirstOrDefault();
+        // station.NextOrder = (await _pizzaOrdersCollection.FindAsync(x => x.StationId == stationId)).FirstOrDefault();
+        station.NextOrder = (await _pizzaOrdersCollection.FindAsync(x => x.StationId == stationId && (
+            x.StartEndReports.FirstOrDefault(y => y.StationId == stationId).EndedAt == null || !x.StartEndReports.Any(y => y.StationId == x.StationId)
+        ))).FirstOrDefault();
+
+        return station;
+    }
+
+    public async Task<IActionResult> StartOrder(string orderId)
+    {
+        var order = (await _pizzaOrdersCollection.FindAsync(x => x.Id == orderId)).FirstOrDefault();
+        if (order.StartEndReports.FirstOrDefault(x => x.StationId == order.StationId) == null)
+        {
+            var report = order.StartEndReports.ToList();
+            report.Add(new StartEndReport(order.StationId));
+            await _pizzaOrdersCollection.FindOneAndUpdateAsync(x => x.Id == orderId, Builders<PizzaOrder>.Update.Set(o => o.StartEndReports, report));
+            return new OkObjectResult("Pedido iniciado");
+        }
+        else return new UnprocessableEntityObjectResult("Pedido ja iniciado"); // Specify the error message
+
+    }
+
+    public async Task EndOrder(string orderId)
+    {
+        var order = (await _pizzaOrdersCollection.FindAsync(x => x.Id == orderId)).FirstOrDefault();
+        var flow = (await _flowsCollection.FindAsync(x => x.Id == order.FlowId)).FirstOrDefault();
+
+        var currentStationIndex = flow.Stations.ToList().IndexOf(order.StationId);
+        var nextStationId = flow.Stations.Skip(currentStationIndex + 1).FirstOrDefault();
+
+        order.StartEndReports.FirstOrDefault(x => x.StationId == order.StationId).EndedAt = DateTime.Now;
+
+        await _pizzaOrdersCollection.FindOneAndUpdateAsync(x => x.Id == orderId, Builders<PizzaOrder>.Update
+            .Set(o => o.StartEndReports, order.StartEndReports)
+            .Set(o => o.StationId, nextStationId));
     }
 
     public static void ParseRemoteTemplate(List<PizzaOrder> orders, string? orderId, string input)

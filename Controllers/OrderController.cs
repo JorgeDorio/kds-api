@@ -17,4 +17,12 @@ public class OrderController(ILogger<OrderController> logger, OrderService Order
     [HttpGet("{stationId}")]
     public async Task<Station> GetByStationId(string stationId) => await _orderService.GetByStationId(stationId);
 
+    [HttpGet("{stationId}/next")]
+    public async Task<Station> GetNextByStationId(string stationId) => await _orderService.GetNextByStationId(stationId);
+
+    [HttpPut("{orderId}/start")]
+    public async Task<IActionResult> StartOrder(string orderId) => await _orderService.StartOrder(orderId);
+
+    [HttpPut("{orderId}/end")]
+    public async Task EndOrder(string orderId) => await _orderService.EndOrder(orderId);
 }

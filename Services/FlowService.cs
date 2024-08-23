@@ -11,9 +11,7 @@ public class FlowService
     public FlowService(IOptions<MongoDatabaseSettings> dbSettings)
     {
         var mongoClient = new MongoClient(dbSettings.Value.ConnectionString);
-
         var mongoDatabase = mongoClient.GetDatabase(dbSettings.Value.DatabaseName);
-
         _flowsCollection = mongoDatabase.GetCollection<Flow>(dbSettings.Value.FlowsCollectionName);
     }
 

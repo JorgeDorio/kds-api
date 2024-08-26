@@ -9,6 +9,7 @@ builder.Services.Configure<MongoDatabaseSettings>(
 builder.Services.AddSingleton<StationService>();
 builder.Services.AddSingleton<OrderService>();
 builder.Services.AddSingleton<FlowService>();
+builder.Services.AddSingleton<UserService>();
 // Add services to the container.
 
 builder.Services.AddControllers();

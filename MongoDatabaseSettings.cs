@@ -11,5 +11,6 @@ public class MongoDatabaseSettings
     public string OrdersCollectionName { get; set; } = null!;
     public string PizzaOrdersCollectionName { get; set; } = null!;
     public string FlowsCollectionName { get; set; } = null!;
-    public string InvitessCollectionName { get; set; } = null!;
+    public string InvitesCollectionName { get; set; } = null!;
+    public string UsersCollectionName { get; set; } = null!;
 }

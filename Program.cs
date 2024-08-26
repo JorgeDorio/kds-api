@@ -10,6 +10,7 @@ builder.Services.AddSingleton<StationService>();
 builder.Services.AddSingleton<OrderService>();
 builder.Services.AddSingleton<FlowService>();
 builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<AuthService>();
 // Add services to the container.
 
 builder.Services.AddControllers();

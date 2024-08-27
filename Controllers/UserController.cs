@@ -1,4 +1,3 @@
-using Kds.Models;
 using Kds.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,4 +18,7 @@ public class UserController(ILogger<UserController> logger, UserService userServ
 
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync([FromBody] User user) => await _userService.LoginAsync(user);
+
+    [HttpGet]
+    public async Task<IEnumerable<User>> GetAllAsync() => await _userService.GetAllAsync();
 }

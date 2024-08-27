@@ -59,4 +59,11 @@ public class UserService
 
         return new OkObjectResult(token);
     }
+
+    public async Task<IEnumerable<User>> GetAllAsync()
+    {
+        var users = await _usersCollection.Find(x => true).ToListAsync();
+
+        return users;
+    }
 }

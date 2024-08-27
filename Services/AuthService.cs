@@ -6,7 +6,8 @@ using Kds;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-public class AuthService{
+public class AuthService
+{
     private readonly string _privateKey;
     public AuthService(IOptions<Settings> settings)
     {
@@ -34,7 +35,7 @@ public class AuthService{
         return hashedValue.Equals(hash, StringComparison.OrdinalIgnoreCase);
     }
 
-     public string GenerateToken(User user)
+    public string GenerateToken(User user)
     {
         var handler = new JwtSecurityTokenHandler();
 
@@ -58,8 +59,9 @@ public class AuthService{
     {
         var ci = new ClaimsIdentity();
 
-        ci.AddClaim(new Claim(ClaimTypes.Name, user.Username));
+        ci.AddClaim(new Claim("username", user.Username));
         ci.AddClaim(new Claim("userId", user.Id.ToString()));
+        ci.AddClaim(new Claim("isAdmin", user.Admin.ToString()));
 
         return ci;
     }

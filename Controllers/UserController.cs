@@ -16,4 +16,7 @@ public class UserController(ILogger<UserController> logger, UserService userServ
 
     [HttpPost("create")]
     public async Task<IActionResult> CreateAsync([FromBody] User user) => await _userService.CreateAsync(user);
+
+    [HttpPost("login")]
+    public async Task<IActionResult> LoginAsync([FromBody] User user) => await _userService.LoginAsync(user);
 }

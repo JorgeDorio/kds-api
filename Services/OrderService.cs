@@ -15,14 +15,14 @@ public class OrderService
     private readonly IMongoCollection<Flow> _flowsCollection;
     private readonly FlowService _flowService;
 
-    public OrderService(IOptions<MongoDatabaseSettings> dbSettings, FlowService flowService)
+    public OrderService(IOptions<Settings> settings, FlowService flowService)
     {
-        var mongoClient = new MongoClient(dbSettings.Value.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(dbSettings.Value.DatabaseName);
-        _pizzaOrdersCollection = mongoDatabase.GetCollection<PizzaOrder>(dbSettings.Value.PizzaOrdersCollectionName);
-        _ordersCollection = mongoDatabase.GetCollection<Order>(dbSettings.Value.OrdersCollectionName);
-        _stationsCollection = mongoDatabase.GetCollection<Station>(dbSettings.Value.StationsCollectionName);
-        _flowsCollection = mongoDatabase.GetCollection<Flow>(dbSettings.Value.FlowsCollectionName);
+        var mongoClient = new MongoClient(settings.Value.ConnectionString);
+        var mongoDatabase = mongoClient.GetDatabase(settings.Value.DatabaseName);
+        _pizzaOrdersCollection = mongoDatabase.GetCollection<PizzaOrder>(settings.Value.PizzaOrdersCollectionName);
+        _ordersCollection = mongoDatabase.GetCollection<Order>(settings.Value.OrdersCollectionName);
+        _stationsCollection = mongoDatabase.GetCollection<Station>(settings.Value.StationsCollectionName);
+        _flowsCollection = mongoDatabase.GetCollection<Flow>(settings.Value.FlowsCollectionName);
         _flowService = flowService;
     }
 

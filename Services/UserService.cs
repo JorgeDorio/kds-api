@@ -12,12 +12,12 @@ public class UserService
     private readonly IMongoCollection<User> _usersCollection;
     private readonly AuthService _authService;
 
-    public UserService(IOptions<MongoDatabaseSettings> dbSettings, AuthService authService)
+    public UserService(IOptions<Settings> settings, AuthService authService)
     {
-        var mongoClient = new MongoClient(dbSettings.Value.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(dbSettings.Value.DatabaseName);
-        _invitesCollection = mongoDatabase.GetCollection<Invite>(dbSettings.Value.InvitesCollectionName);
-        _usersCollection = mongoDatabase.GetCollection<User>(dbSettings.Value.UsersCollectionName);
+        var mongoClient = new MongoClient(settings.Value.ConnectionString);
+        var mongoDatabase = mongoClient.GetDatabase(settings.Value.DatabaseName);
+        _invitesCollection = mongoDatabase.GetCollection<Invite>(settings.Value.InvitesCollectionName);
+        _usersCollection = mongoDatabase.GetCollection<User>(settings.Value.UsersCollectionName);
         _authService = authService;
     }
 
@@ -39,10 +39,24 @@ public class UserService
     {
         var invite = await _invitesCollection.Find(x => x.Code == newUser.InviteCode && x.ExpiresAt > DateTime.Now && !x.Used).FirstOrDefaultAsync();
         if (invite == null) return new NotFoundObjectResult("Código de convite inválido ou expirado");
+
+        var user = await _usersCollection.Find(x => x.Username == newUser.Username).FirstOrDefaultAsync();
+        if (user != null) return new UnprocessableEntityObjectResult("Usuário já cadastrado");
+
         newUser.Password = _authService.Hash(newUser.Password);
         await _usersCollection.InsertOneAsync(newUser);
         await _invitesCollection.FindOneAndUpdateAsync(x => x.Id == invite.Id, Builders<Invite>.Update.Set(i => i.Used, true));
 
         return new OkObjectResult("Usuário cadastrado com sucesso");
+    }
+
+    public async Task<IActionResult> LoginAsync(User user)
+    {
+        var dbUser = await _usersCollection.Find(x => x.Username == user.Username).FirstOrDefaultAsync();
+        if (dbUser == null || !_authService.CompareHash(user.Password, dbUser.Password)) return new NotFoundObjectResult("Usuário ou senha inválidos");
+
+        var token = _authService.GenerateToken(dbUser);
+
+        return new OkObjectResult(token);
     }
 }

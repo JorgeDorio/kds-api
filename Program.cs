@@ -3,8 +3,8 @@ using Kds.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<MongoDatabaseSettings>(
-    builder.Configuration.GetSection("MongoDatabase"));
+builder.Services.Configure<Settings>(
+    builder.Configuration.GetSection("Settings"));
 
 builder.Services.AddSingleton<StationService>();
 builder.Services.AddSingleton<OrderService>();

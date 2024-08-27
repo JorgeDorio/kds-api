@@ -8,11 +8,11 @@ public class FlowService
 {
     private readonly IMongoCollection<Flow> _flowsCollection;
 
-    public FlowService(IOptions<MongoDatabaseSettings> dbSettings)
+    public FlowService(IOptions<Settings> settings)
     {
-        var mongoClient = new MongoClient(dbSettings.Value.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(dbSettings.Value.DatabaseName);
-        _flowsCollection = mongoDatabase.GetCollection<Flow>(dbSettings.Value.FlowsCollectionName);
+        var mongoClient = new MongoClient(settings.Value.ConnectionString);
+        var mongoDatabase = mongoClient.GetDatabase(settings.Value.DatabaseName);
+        _flowsCollection = mongoDatabase.GetCollection<Flow>(settings.Value.FlowsCollectionName);
     }
 
     public async Task CreateAsync(Flow newFlow)

@@ -8,13 +8,13 @@ public class StationService
 {
     private readonly IMongoCollection<Station> _stationsCollection;
 
-    public StationService(IOptions<MongoDatabaseSettings> dbSettings)
+    public StationService(IOptions<Settings> settings)
     {
-        var mongoClient = new MongoClient(dbSettings.Value.ConnectionString);
+        var mongoClient = new MongoClient(settings.Value.ConnectionString);
 
-        var mongoDatabase = mongoClient.GetDatabase(dbSettings.Value.DatabaseName);
+        var mongoDatabase = mongoClient.GetDatabase(settings.Value.DatabaseName);
 
-        _stationsCollection = mongoDatabase.GetCollection<Station>(dbSettings.Value.StationsCollectionName);
+        _stationsCollection = mongoDatabase.GetCollection<Station>(settings.Value.StationsCollectionName);
     }
 
     public async Task CreateAsync(Station newStation)
